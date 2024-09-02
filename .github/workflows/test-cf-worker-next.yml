@@ -31,7 +31,6 @@ jobs:
             - name: Publish to Cloudflare Workers
               run: |
                   wrangler publish --name $GITHUB_SHA \
-                    --account-id $CLOUDFLARE_ACCOUNT_ID \
                     --env production
 
             - run: curl -s "https://$CLOUDFLARE_WORKERS_DOMAIN/$GITHUB_SHA" -o deployInfo.json
