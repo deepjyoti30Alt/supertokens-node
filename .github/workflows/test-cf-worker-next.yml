@@ -35,25 +35,15 @@ jobs:
             - name: Write wrangler.toml
               run: |
                   echo 'name = "old-frog-da21"' > wrangler.toml
-                  echo 'type = "javascript"' >> wrangler.toml
                   echo '' >> wrangler.toml
                   echo 'account_id = "6469d28d52a534b70a24313aa1bf5690"' >> wrangler.toml
-                  echo 'workers_dev = true' >> wrangler.toml
                   echo '' >> wrangler.toml
-                  echo 'build = {' >> wrangler.toml
-                  echo '  command = "npx next-on-pages build --output ./.wrangler/worker",' >> wrangler.toml
-                  echo '  cwd = "."' >> wrangler.toml
-                  echo '}' >> wrangler.toml
-                  echo '' >> wrangler.toml
-                  echo 'main = "./.wrangler/worker/index.js"' >> wrangler.toml
+                  echo 'pages_build_output_dir = ".wrangler/output/static"' >> wrangler.toml
                   echo '' >> wrangler.toml
                   echo 'compatibility_date = "2024-09-02"' >> wrangler.toml
 
-            - name: Print wrangler.toml
-              run: cat wrangler.toml
-
-            - name: Publish to Cloudflare Workers
-              run: npx wrangler deploy --name $GITHUB_SHA
+            - name: Build using next-on-pages and deploy using wrangler
+              run: npx next-on-pages build && wrangler pages deploy
 
             - run: curl -s "https://$CLOUDFLARE_WORKERS_DOMAIN/$GITHUB_SHA" -o deployInfo.json
             - run: cat deployInfo.json
