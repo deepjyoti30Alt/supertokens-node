@@ -28,6 +28,9 @@ jobs:
             - name: Install next-on-pages
               run: npm install --save-dev @cloudflare/next-on-pages
 
+            - name: Create a wrangler.toml
+              run: echo "compatibility_flags = [ "nodejs_compat" ]" >> wrangler.toml
+
             - name: Build using next-on-pages
               run: npx next-on-pages
 
