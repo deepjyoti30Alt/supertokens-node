@@ -34,7 +34,7 @@ jobs:
 
             - name: Replace APP_URL with deployed URL value
               run: |
-                  sed -i "s|process.env.APP_URL|${{ env.APP_URL }}|" config/appInfo.ts
+                  sed -i "s|process.env.APP_URL|\"${{ env.APP_URL }}\"|" config/appInfo.ts
 
             - name: Verify the changes
               run: cat config/appInfo.ts
