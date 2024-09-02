@@ -38,8 +38,6 @@ jobs:
               run: |
                   echo 'name = "old-frog-da21"' > wrangler.toml
                   echo '' >> wrangler.toml
-                  echo 'account_id = "6469d28d52a534b70a24313aa1bf5690"' >> wrangler.toml
-                  echo '' >> wrangler.toml
                   echo 'pages_build_output_dir = ".wrangler/output/static"' >> wrangler.toml
                   echo '' >> wrangler.toml
                   echo 'compatibility_date = "2024-09-02"' >> wrangler.toml
