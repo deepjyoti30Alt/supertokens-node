@@ -45,19 +45,22 @@ jobs:
                   wranglerVersion: "3"
 
             - name: Extract deployment info and save to JSON
+              id: extract_deploy_info
               run: |
                   DEPLOY_ID=${{ steps.deploy.outputs.id }}
                   DEPLOY_URL=${{ steps.deploy.outputs.url }}
-                  pwd
-                  echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > examples/next/with-emailpassword/deployInfo.json
-                  cat examples/next/with-emailpassword/deployInfo.json
+                  echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > deployInfo.json
 
-            - run: |
+            - name: Run tests
+              env:
+                  DEPLOYED_URL: ${{ steps.extract_deploy_info.outputs.deploy_url }}
+              run: |
                   ( \
                     (echo "=========== Test attempt 1 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
                     (echo "=========== Test attempt 2 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
                     (echo "=========== Test attempt 3 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) \
                   )
+
             - name: The job has failed
               if: ${{ failure() }}
               uses: actions/upload-artifact@v3
