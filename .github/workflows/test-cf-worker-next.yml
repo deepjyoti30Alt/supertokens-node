@@ -6,6 +6,7 @@ jobs:
         env:
             CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
             CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+            APP_URL: supertokens-node-b95.pages.dev
             TEST_DEPLOYED_VERSION: true
         defaults:
             run:
@@ -31,10 +32,15 @@ jobs:
             - name: Create a wrangler.toml
               run: echo "compatibility_flags = [ "nodejs_compat" ]" >> wrangler.toml
 
+            - name: Replace APP_URL with deployed URL value
+              run: |
+                  sed -i "s|process.env.APP_URL|${{ env.APP_URL }}|" config/appInfo.ts
+
+            - name: Verify the changes
+              run: cat config/appInfo.ts
+
             - name: Build using next-on-pages
               run: npx next-on-pages
-              env:
-                  APP_URL: supertokens-node-b95.pages.dev
 
             - name: Publish to Cloudflare Pages
               id: deploy
