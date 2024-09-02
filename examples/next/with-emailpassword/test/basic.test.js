@@ -38,18 +38,14 @@ let deployInfo;
 
 if (process.env.TEST_DEPLOYED_VERSION) {
     deployInfo = require("../deployInfo.json");
-    console.log(deployInfo);
 
     if (!deployInfo.deploy_url) {
         throw new Error("Deployment failed or json error. " + JSON.stringify(deployInfo));
     }
 }
 
-console.log(process.env);
-const apiDomain = deployInfo?.deploy_url || process.env.DEPLOY_URL || "http://localhost:3000";
-const websiteDomain = deployInfo?.deploy_url || process.env.DEPLOY_URL || "http://localhost:3000";
-
-console.log(apiDomain, websiteDomain);
+const apiDomain = deployInfo?.deploy_url || "http://localhost:3000";
+const websiteDomain = deployInfo?.deploy_url || "http://localhost:3000";
 
 SuperTokensNode.init({
     supertokens: {

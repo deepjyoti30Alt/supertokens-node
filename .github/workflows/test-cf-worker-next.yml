@@ -43,6 +43,7 @@ jobs:
                   projectName: "supertokens-node-pr-check-for-edge-function-compat"
                   directory: "./examples/next/with-emailpassword/.vercel/output/static"
                   wranglerVersion: "3"
+                  branch: "master"
 
             - name: Extract deployment info and save to JSON
               id: extract_deploy_info
@@ -50,11 +51,8 @@ jobs:
                   DEPLOY_ID=${{ steps.deploy.outputs.id }}
                   DEPLOY_URL=${{ steps.deploy.outputs.url }}
                   echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > deployInfo.json
-                  echo "::set-output name=deploy_url::$DEPLOY_URL"
 
             - name: Run tests
-              env:
-                  DEPLOY_URL: ${{ steps.extract_deploy_info.outputs.deploy_url }}
               run: |
                   ( \
                     (echo "=========== Test attempt 1 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
