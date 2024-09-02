@@ -43,7 +43,7 @@ jobs:
             - name: Build using next-on-pages and deploy using wrangler
               run: |
                   npx next-on-pages
-                  DEPLOY_OUTPUT=$(wrangler pages deploy --project-name "test-app-$GITHUB_SHA" --branch $GITHUB_REF_NAME --commit-hash $GITHUB_SHA --env production)
+                  DEPLOY_OUTPUT=$(wrangler pages deploy --project-name "test-app-$GITHUB_SHA" --branch $GITHUB_REF_NAME --commit-hash $GITHUB_SHA)
                   DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://\S+')
                   echo "{\"deploy_url\": \"$DEPLOY_URL\"}" > deployInfo.json
                   cat deployInfo.json
