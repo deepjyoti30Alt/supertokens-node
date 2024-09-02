@@ -48,6 +48,21 @@ class CustomResponseWrapper {
         }
     }
 
+    getHeader(name: string): string | null {
+        if (typeof this.res.getHeader === "function") {
+            const header = this.res.getHeader(name);
+            return Array.isArray(header) ? header.join(", ") : (header as string | null);
+        } else {
+            return this.headers.get(name);
+        }
+    }
+
+    json(data: unknown): Response | void {
+        this.setHeader("Content-Type", "application/json");
+        const jsonData = JSON.stringify(data);
+        return this.send(jsonData);
+    }
+
     get writableEnded(): boolean {
         return typeof this.res.writableEnded !== "undefined" ? this.res.writableEnded : false;
     }
