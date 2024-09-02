@@ -4,8 +4,8 @@ jobs:
     test:
         runs-on: ubuntu-latest
         env:
-            CLOUDFLARE_API_TOKEN: "m9XZz-t70cQ7QQUQn-uZR_KlEDIEy15CiQ9Hz_cR"
-            CLOUDFLARE_ACCOUNT_ID: "6469d28d52a534b70a24313aa1bf5690"
+            CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+            CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
             TEST_DEPLOYED_VERSION: true
         defaults:
             run:
@@ -37,7 +37,7 @@ jobs:
               with:
                   apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
-                  projectName: "cf-next-test"
+                  projectName: "supertokens-node-pr-check-for-edge-function-compat"
                   directory: "./examples/next/with-emailpassword/.vercel/output/static"
                   wranglerVersion: "3"
 
