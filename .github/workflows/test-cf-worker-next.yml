@@ -49,8 +49,8 @@ jobs:
                   DEPLOY_ID=${{ steps.deploy.outputs.id }}
                   DEPLOY_URL=${{ steps.deploy.outputs.url }}
 
-                  echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > deployInfo.json
-                  cat deployInfo.json
+                  echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > examples/next/with-emailpassword/deployInfo.json
+                  cat examples/next/with-emailpassword/deployInfo.json
 
             - run: |
                   ( \
