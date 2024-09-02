@@ -43,7 +43,7 @@ jobs:
                   echo 'compatibility_date = "2024-09-02"' >> wrangler.toml
 
             - name: Build using next-on-pages and deploy using wrangler
-              run: npx next-on-pages build && wrangler pages deploy
+              run: npx next-on-pages && wrangler pages deploy
 
             - run: curl -s "https://$CLOUDFLARE_WORKERS_DOMAIN/$GITHUB_SHA" -o deployInfo.json
             - run: cat deployInfo.json
