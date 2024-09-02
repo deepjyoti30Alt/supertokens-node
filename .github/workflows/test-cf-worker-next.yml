@@ -18,13 +18,14 @@ jobs:
             - run: npm install
             - run: npm install mocha@6.1.4 jsdom-global@3.0.2 puppeteer@^11.0.0 isomorphic-fetch@^3.0.0
 
+            - name: Remove pages as we will test with app directory
+              run: rm -rf pages
+
             # Step to update the runtime to edge to all files in app/api/ and pages/api/
             - name: Add runtime export to API files
               run: |
                   find app/api -type f \( -name "*.js" -o -name "*.ts" \) -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
-                  find pages/api -type f \( -name "*.js" -o -name "*.ts" \) -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
                   echo 'export const runtime = "edge";' >> app/auth/[[...path]]/page.tsx
-                  echo 'export const runtime = "edge";' >> pages/api/auth/[[...path]].tsx
 
             - name: Install next-on-pages
               run: npm install --save-dev @cloudflare/next-on-pages
@@ -35,9 +36,6 @@ jobs:
             - name: Replace APP_URL with deployed URL value
               run: |
                   sed -i "s|process.env.APP_URL|\"${{ env.APP_URL }}\"|" config/appInfo.ts
-
-            - name: Verify the changes
-              run: cat config/appInfo.ts
 
             - name: Build using next-on-pages
               run: npx next-on-pages
