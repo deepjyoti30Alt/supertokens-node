@@ -6,7 +6,6 @@ jobs:
         env:
             CLOUDFLARE_API_TOKEN: "m9XZz-t70cQ7QQUQn-uZR_KlEDIEy15CiQ9Hz_cR"
             CLOUDFLARE_ACCOUNT_ID: "6469d28d52a534b70a24313aa1bf5690"
-            CLOUDFLARE_WORKERS_DOMAIN: "https://old-frog-da21.joey31real-646.workers.dev/"
             TEST_DEPLOYED_VERSION: true
         defaults:
             run:
@@ -26,26 +25,28 @@ jobs:
                   echo 'export const runtime = "edge";' >> app/auth/[[...path]]/page.tsx
                   echo 'export const runtime = "edge";' >> pages/api/auth/[[...path]].tsx
 
-            # Deploy to Cloudflare Workers
-            - name: Install Wrangler CLI
-              run: npm install -g wrangler
-
             - name: Install next-on-pages
               run: npm install --save-dev @cloudflare/next-on-pages
 
-            # Step to write wrangler.toml
-            - name: Write wrangler.toml
-              run: |
-                  echo 'pages_build_output_dir = ".wrangler/output/static"' >> wrangler.toml
-                  echo '' >> wrangler.toml
-                  echo 'compatibility_date = "2024-09-02"' >> wrangler.toml
+            - name: Build using next-on-pages
+              run: npx next-on-pages
 
-            - name: Build using next-on-pages and deploy using wrangler
+            - name: Publish to Cloudflare Pages
+              id: deploy
+              uses: cloudflare/pages-action@v1
+              with:
+                  apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
+                  accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
+                  projectName: "temp-tests-project"
+                  directory: ".vercel/output/static"
+                  wranglerVersion: "3"
+
+            - name: Extract deployment info and save to JSON
               run: |
-                  npx next-on-pages
-                  DEPLOY_OUTPUT=$(wrangler pages deploy --project-name "test-app-$GITHUB_SHA" --branch $GITHUB_REF_NAME --commit-hash $GITHUB_SHA)
-                  DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://\S+')
-                  echo "{\"deploy_url\": \"$DEPLOY_URL\"}" > deployInfo.json
+                  DEPLOY_ID=${{ steps.deploy.outputs.id }}
+                  DEPLOY_URL=${{ steps.deploy.outputs.url }}
+
+                  echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > deployInfo.json
                   cat deployInfo.json
 
             - run: |
