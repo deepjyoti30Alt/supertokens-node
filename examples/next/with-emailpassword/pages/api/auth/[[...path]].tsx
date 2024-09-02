@@ -11,7 +11,8 @@ export default async function superTokens(req: NextApiRequest, res: NextApiRespo
         async (next) => {
             // This is needed for production deployments with Vercel
             // It'll be overwritten by the middleware in some cases (the jwks.json endpoint)
-            res.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
+            console.log('res is: ', res);
+            // res.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
 
             await middleware()(req as any, res as any, next);
         },
