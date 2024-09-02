@@ -1,0 +1,52 @@
+name: "Test edge function compatibility for Next.js on Cloudflare Workers"
+on: push
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        env:
+            CLOUDFLARE_API_TOKEN: "m9XZz-t70cQ7QQUQn-uZR_KlEDIEy15CiQ9Hz_cR"
+            CLOUDFLARE_ACCOUNT_ID: "6469d28d52a534b70a24313aa1bf5690"
+            CLOUDFLARE_WORKERS_DOMAIN: "https://old-frog-da21.joey31real-646.workers.dev/"
+            TEST_DEPLOYED_VERSION: true
+        defaults:
+            run:
+                working-directory: examples/next/with-emailpassword
+        steps:
+            - uses: actions/checkout@v2
+            - run: echo $GITHUB_SHA
+            - run: npm install git+https://github.com:supertokens/supertokens-node.git#$GITHUB_SHA
+            - run: npm install
+            - run: npm install mocha@6.1.4 jsdom-global@3.0.2 puppeteer@^11.0.0 isomorphic-fetch@^3.0.0
+
+            # Step to update the runtime to edge to all files in app/api/ and pages/api/
+            - name: Add runtime export to API files
+              run: |
+                  find app/api -type f -name "*.js" -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
+                  find pages/api -type f -name "*.js" -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
+
+            # Deploy to Cloudflare Workers
+            - name: Install Wrangler CLI
+              run: npm install -g wrangler
+
+            - name: Publish to Cloudflare Workers
+              run: |
+                  wrangler publish --name $GITHUB_SHA \
+                    --account-id $CLOUDFLARE_ACCOUNT_ID \
+                    --env production
+
+            - run: curl -s "https://$CLOUDFLARE_WORKERS_DOMAIN/$GITHUB_SHA" -o deployInfo.json
+            - run: cat deployInfo.json
+
+            - run: |
+                  ( \
+                    (echo "=========== Test attempt 1 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
+                    (echo "=========== Test attempt 2 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
+                    (echo "=========== Test attempt 3 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) \
+                  )
+            - name: The job has failed
+              if: ${{ failure() }}
+              uses: actions/upload-artifact@v3
+              with:
+                  name: screenshots
+                  path: |
+                      ./**/*screenshot.jpeg
