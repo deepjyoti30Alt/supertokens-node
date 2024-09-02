@@ -36,17 +36,17 @@ jobs:
             # Step to write wrangler.toml
             - name: Write wrangler.toml
               run: |
-                  echo 'name = "old-frog-da21"' > wrangler.toml
-                  echo '' >> wrangler.toml
                   echo 'pages_build_output_dir = ".wrangler/output/static"' >> wrangler.toml
                   echo '' >> wrangler.toml
                   echo 'compatibility_date = "2024-09-02"' >> wrangler.toml
 
             - name: Build using next-on-pages and deploy using wrangler
-              run: npx next-on-pages && wrangler pages deploy
-
-            - run: curl -s "https://$CLOUDFLARE_WORKERS_DOMAIN/$GITHUB_SHA" -o deployInfo.json
-            - run: cat deployInfo.json
+              run: |
+                  npx next-on-pages
+                  DEPLOY_OUTPUT=$(wrangler pages deploy --project-name "test-app-$GITHUB_SHA" --branch $GITHUB_REF_NAME --commit-dish $GITHUB_SHA --env production)
+                  DEPLOY_URL=$(echo "$DEPLOY_OUTPUT" | grep -oP 'https://\S+')
+                  echo "{\"deploy_url\": \"$DEPLOY_URL\"}" > deployInfo.json
+                  cat deployInfo.json
 
             - run: |
                   ( \
