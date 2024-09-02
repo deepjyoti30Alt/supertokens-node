@@ -33,6 +33,8 @@ jobs:
 
             - name: Build using next-on-pages
               run: npx next-on-pages
+              env:
+                  APP_URL: supertokens-node-b95.pages.dev
 
             - name: Publish to Cloudflare Pages
               id: deploy
