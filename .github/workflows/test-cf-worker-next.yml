@@ -50,6 +50,7 @@ jobs:
                   DEPLOY_ID=${{ steps.deploy.outputs.id }}
                   DEPLOY_URL=${{ steps.deploy.outputs.url }}
                   echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > deployInfo.json
+                  echo "::set-output name=deploy_url::$DEPLOY_URL"
 
             - name: Run tests
               env:
