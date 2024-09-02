@@ -21,8 +21,8 @@ jobs:
             # Step to update the runtime to edge to all files in app/api/ and pages/api/
             - name: Add runtime export to API files
               run: |
-                  find app/api -type f -name "*.js" -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
-                  find pages/api -type f -name "*.js" -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
+                  find app/api -type f \( -name "*.js" -o -name "*.ts" \) -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
+                  find pages/api -type f \( -name "*.js" -o -name "*.ts" \) -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
 
             # Deploy to Cloudflare Workers
             - name: Install Wrangler CLI
