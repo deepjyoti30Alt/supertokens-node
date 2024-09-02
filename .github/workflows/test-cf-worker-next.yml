@@ -28,10 +28,29 @@ jobs:
             - name: Install Wrangler CLI
               run: npm install -g wrangler
 
-            - name: Publish to Cloudflare Workers
+            - name: Install next-on-pages
+              run: npm install --save-dev @cloudflare/next-on-pages
+
+            # Step to write wrangler.toml
+            - name: Write wrangler.toml
               run: |
-                  wrangler publish --name $GITHUB_SHA \
-                    --env production
+                  echo 'name = "old-frog-da21"' > wrangler.toml
+                  echo 'type = "javascript"' >> wrangler.toml
+                  echo '' >> wrangler.toml
+                  echo 'account_id = "6469d28d52a534b70a24313aa1bf5690"' >> wrangler.toml
+                  echo 'workers_dev = true' >> wrangler.toml
+                  echo '' >> wrangler.toml
+                  echo 'build = {' >> wrangler.toml
+                  echo '  command = "npx next-on-pages build --output ./.wrangler/worker",' >> wrangler.toml
+                  echo '  cwd = "."' >> wrangler.toml
+                  echo '}' >> wrangler.toml
+                  echo '' >> wrangler.toml
+                  echo 'main = "./.wrangler/worker/index.js"' >> wrangler.toml
+                  echo '' >> wrangler.toml
+                  echo 'compatibility_date = "2024-09-02"' >> wrangler.toml
+
+            - name: Publish to Cloudflare Workers
+              run: npx wrangler deploy --name $GITHUB_SHA
 
             - run: curl -s "https://$CLOUDFLARE_WORKERS_DOMAIN/$GITHUB_SHA" -o deployInfo.json
             - run: cat deployInfo.json
