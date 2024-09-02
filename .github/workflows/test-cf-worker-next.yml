@@ -38,7 +38,7 @@ jobs:
                   apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
                   projectName: "cf-next-test"
-                  directory: ".vercel/output/static"
+                  directory: "./.vercel/output/static"
                   wranglerVersion: "3"
 
             - name: Extract deployment info and save to JSON
