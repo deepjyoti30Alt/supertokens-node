@@ -54,7 +54,7 @@ jobs:
 
             - name: Run tests
               env:
-                  DEPLOYED_URL: ${{ steps.extract_deploy_info.outputs.deploy_url }}
+                  DEPLOY_URL: ${{ steps.extract_deploy_info.outputs.deploy_url }}
               run: |
                   ( \
                     (echo "=========== Test attempt 1 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \

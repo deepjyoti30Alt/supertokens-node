@@ -46,8 +46,8 @@ if (process.env.TEST_DEPLOYED_VERSION) {
 }
 
 console.log(process.env);
-const apiDomain = deployInfo?.deploy_url || process.env.DEPLOYED_URL || "http://localhost:3000";
-const websiteDomain = deployInfo?.deploy_url || process.env.DEPLOYED_URL || "http://localhost:3000";
+const apiDomain = deployInfo?.deploy_url || process.env.DEPLOY_URL || "http://localhost:3000";
+const websiteDomain = deployInfo?.deploy_url || process.env.DEPLOY_URL || "http://localhost:3000";
 
 console.log(apiDomain, websiteDomain);
 
