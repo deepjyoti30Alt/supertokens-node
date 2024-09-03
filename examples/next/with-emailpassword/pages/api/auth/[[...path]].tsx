@@ -14,7 +14,7 @@ export default async function superTokens(req: NextApiRequest, res: NextApiRespo
     await superTokensNextWrapper(
         async () => {
             const response = await handleCall(req as any);
-            
+
             // This is needed for production deployments with Vercel
             if (!response.headers.has("Cache-Control")) {
                 response.headers.set("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
