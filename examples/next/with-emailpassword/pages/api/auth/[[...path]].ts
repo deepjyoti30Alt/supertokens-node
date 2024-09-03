@@ -156,4 +156,6 @@ export default async function superTokens(rawReq, rawRes) {
     if (!res.writableEnded) {
         res.status(404).send("Not found");
     }
+
+    return res;
 }
