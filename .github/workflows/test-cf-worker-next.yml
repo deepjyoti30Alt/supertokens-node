@@ -22,7 +22,6 @@ jobs:
             - name: Add runtime export to API files
               run: |
                   find pages/api -type f \( -name "*.js" -o -name "*.ts" \) -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
-                  echo 'export const runtime = "edge";' >> pages/auth/[[...path]].tsx
 
             # Install next on pages to build the app
             - name: Install next-on-pages
