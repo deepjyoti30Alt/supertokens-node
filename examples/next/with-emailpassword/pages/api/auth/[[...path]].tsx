@@ -157,6 +157,6 @@ export default async function superTokens(rawReq: NextApiRequest, rawRes: NextAp
     );
 
     if (!res.writableEnded) {
-        return res.status(404).send("Not found");
+        return res.status(404).json({ "detail": "Not found" });
     }
 }
