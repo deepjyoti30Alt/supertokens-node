@@ -30,8 +30,8 @@ jobs:
               run: npm install --save-dev @cloudflare/next-on-pages
 
             # Setup the compatibility flag to make non edge functions run
-            - name: Create a wrangler.toml
-              run: echo "compatibility_flags = [ "nodejs_compat" ]" >> wrangler.toml
+            # - name: Create a wrangler.toml
+            #   run: echo "compatibility_flags = [ "nodejs_compat" ]" >> wrangler.toml
 
             - name: Replace APP_URL with deployed URL value
               run: |
