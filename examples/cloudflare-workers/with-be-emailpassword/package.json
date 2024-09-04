@@ -6,7 +6,6 @@
     "main": "index.js",
     "scripts": {
         "start": "wrangler dev index.ts --port 3001",
-        "build": "vite build"
     },
     "dependencies": {
         "hono": "^4.3.9",
