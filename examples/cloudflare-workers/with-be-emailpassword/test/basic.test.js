@@ -17,6 +17,8 @@
  * Imports
  */
 
+const assert = require("assert");
+
 // Run the tests in a DOM environment.
 require("jsdom-global")();
 
@@ -47,9 +49,9 @@ describe("Auth API Tests", () => {
 
         const data = await response.json();
 
-        expect(response.status).toBe(200);
-        expect(data.status).toBe("FIELD_ERROR");
-        expect(data.formFields.length).toBe(1);
+        assert.strictEqual(response.status, 200, "Expected status code to be 200");
+        assert.strictEqual(data.status, "FIELD_ERROR", "Expected status to be FIELD_ERROR");
+        assert.strictEqual(data.formFields.length, 1, "Expected formFields length to be 1");
     });
 
     it("should sign in successfully and return status 200 with OK status", async () => {
@@ -63,7 +65,7 @@ describe("Auth API Tests", () => {
 
         const data = await response.json();
 
-        expect(response.status).toBe(200);
-        expect(data.status).toBe("OK");
+        assert.strictEqual(response.status, 200, "Expected status code to be 200");
+        assert.strictEqual(data.status, "OK", "Expected status to be OK");
     });
 });
