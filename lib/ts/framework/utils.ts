@@ -24,16 +24,6 @@ import { getBuffer, getFromObjectCaseInsensitive, isBuffer } from "../utils";
 import contentType from "content-type";
 import pako from "pako";
 
-let brotliDecompress: ((input: any) => any) | null = null;
-
-try {
-    // @ts-ignore
-    // TODO: Enable this again once a fix is figured out for hono
-    // if (typeof EdgeRuntime === "undefined") brotliDecompress = require("brotli").decompress;
-} catch (error) {
-    brotliDecompress = null;
-}
-
 async function inflate(stream: IncomingMessage): Promise<string> {
     if (!stream) {
         throw new TypeError("argument stream is required");
@@ -56,14 +46,7 @@ async function inflate(stream: IncomingMessage): Promise<string> {
 
         decompressedData = inflator.result;
     } else if (encoding === "br") {
-        if (!brotliDecompress) throw new Error(BROTLI_DECOMPRESSION_ERROR_MESSAGE);
-
-        const chunks = [];
-        for await (const chunk of stream) {
-            chunks.push(chunk);
-        }
-        const compressedData = getBuffer().concat(chunks);
-        decompressedData = brotliDecompress(compressedData);
+        throw new Error(BROTLI_DECOMPRESSION_ERROR_MESSAGE);
     } else {
         // Handle identity or unsupported encoding
         decompressedData = getBuffer().concat([]);
