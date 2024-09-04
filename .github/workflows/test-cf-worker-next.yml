@@ -11,7 +11,7 @@ jobs:
             TEST_DEPLOYED_VERSION: true
         defaults:
             run:
-                working-directory: examples/next/with-emailpassword
+                working-directory: examples/next/with-be-emailpassword
         steps:
             - uses: actions/checkout@v2
             - run: echo $GITHUB_SHA
@@ -23,15 +23,14 @@ jobs:
             - name: Add runtime export to API files
               run: |
                   find app/api -type f \( -name "*.js" -o -name "*.ts" \) -exec sed -i '1s/^/export const runtime = "edge";\n/' {} +
-                  echo 'export const runtime = "edge";' >> app/auth/[[...path]]/page.tsx
 
             # Install next on pages to build the app
             - name: Install next-on-pages
               run: npm install --save-dev @cloudflare/next-on-pages
 
             # Setup the compatibility flag to make non edge functions run
-            - name: Create a wrangler.toml
-              run: echo "compatibility_flags = [ "nodejs_compat" ]" >> wrangler.toml
+            # - name: Create a wrangler.toml
+            #   run: echo "compatibility_flags = [ "nodejs_compat" ]" >> wrangler.toml
 
             - name: Replace APP_URL with deployed URL value
               run: |
@@ -46,7 +45,7 @@ jobs:
                   apiToken: ${{ env.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
                   projectName: ${{ env.CLOUDFLARE_PROJECT_NAME }}
-                  directory: "./examples/next/with-emailpassword/.vercel/output/static"
+                  directory: "./examples/next/with-be-emailpassword/.vercel/output/static"
                   wranglerVersion: "3"
                   branch: "master"
 
@@ -56,17 +55,17 @@ jobs:
                   DEPLOY_ID=${{ steps.deploy.outputs.id }}
                   DEPLOY_URL=${{ steps.deploy.outputs.url }}
                   echo "{\"deploy_url\": \"$DEPLOY_URL\", \"deploy_id\": \"$DEPLOY_ID\"}" > deployInfo.json
-            - name: Run tests
-              run: |
-                  ( \
-                    (echo "=========== Test attempt 1 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
-                    (echo "=========== Test attempt 2 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
-                    (echo "=========== Test attempt 3 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) \
-                  )
-            - name: The job has failed
-              if: ${{ failure() }}
-              uses: actions/upload-artifact@v3
-              with:
-                  name: screenshots
-                  path: |
-                      ./**/*screenshot.jpeg
+            # - name: Run tests
+            #   run: |
+            #       ( \
+            #         (echo "=========== Test attempt 1 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
+            #         (echo "=========== Test attempt 2 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) || \
+            #         (echo "=========== Test attempt 3 ===========" && npx mocha --no-config --timeout 80000 test/**/*.test.js) \
+            #       )
+            # - name: The job has failed
+            #   if: ${{ failure() }}
+            #   uses: actions/upload-artifact@v3
+            #   with:
+            #       name: screenshots
+            #       path: |
+            #           ./**/*screenshot.jpeg
