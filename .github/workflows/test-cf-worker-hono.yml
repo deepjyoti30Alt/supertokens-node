@@ -25,7 +25,7 @@ jobs:
                   sed -i "s|process.env.REACT_APP_WEBSITE_URL|\"${{ env.APP_URL }}\"|" config.ts
 
             - name: Deploy the changes
-              run: npx wrangler --name ${{ env.CLOUDFLARE_PROJECT_NAME }} index.ts
+              run: npx wrangler deploy --name ${{ env.CLOUDFLARE_PROJECT_NAME }} index.ts
 
             - name: Run tests
               run: |
