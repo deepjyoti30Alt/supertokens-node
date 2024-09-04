@@ -67,5 +67,24 @@ describe("Auth API Tests", () => {
 
         assert.strictEqual(response.status, 200, "Expected status code to be 200");
         assert.strictEqual(data.status, "OK", "Expected status to be OK");
+
+        // Assert that session is working by getting the sessioninfo
+        const accessToken = response.headers.get("St-Access-Token");
+        assert(accessToken, "Expected access token to be present in headers");
+
+        // Use the access token to get session info
+        const sessionResponse = await fetch(`${APP_URL}/sessioninfo`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        const sessionData = await sessionResponse.json();
+
+        // Check that session info is retrieved successfully
+        assert.strictEqual(sessionResponse.status, 200, "Expected session info status code to be 200");
+        assert(sessionData, "Expected session data to be present");
     });
 });
